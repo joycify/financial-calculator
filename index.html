@@ -24,10 +24,8 @@
         <p>3) Specify the time duration in years.</p>
         <p>4) Choose the number of compounding periods per year.</p>
         <p>5) If calculating annuities, enter the payment amount.</p>
-        <p>6) Provide an annual growth rate for payments if applicable.</p>
-        <p>7) If dealing with deferred annuities, specify the deferred period.</p>
-        <p>8) Select the calculation type from the dropdown menu.</p>
-        <p>9) Click the "Calculate" button to get results.</p>
+        <p>6) Select the calculation type from the dropdown menu.</p>
+        <p>7) Click the "Calculate" button to get results.</p>
     </ul>
     
     <form onsubmit="calculateFinancials(event)">
@@ -46,21 +44,11 @@
         <label for="payment">Payment Amount (for annuities):</label>
         <input type="number" id="payment" step="0.01" value="0"><br><br>
 
-        <label for="growthRate">Annual Growth Rate of Payments (%):</label>
-        <input type="number" id="growthRate" step="0.01" value="0"><br><br>
-
-        <label for="deferredTime">Deferred Period (years):</label>
-        <input type="number" id="deferredTime" step="0.01" value="0"><br><br>
-
         <select id="calculationType">
             <option value="simple">Simple Interest</option>
             <option value="compound">Compound Interest</option>
             <option value="presentValueAnnuity">Present Value of Annuity</option>
             <option value="futureValueAnnuity">Future Value of Annuity</option>
-            <option value="growingAnnuity">Present Value of Growing Annuity</option>
-            <option value="deferredAnnuity">Deferred Annuity</option>
-            <option value="perpetuity">Perpetuity</option>
-            <option value="growingPerpetuity">Growing Perpetuity</option>
         </select><br><br>
 
         <button type="submit">Calculate</button>
@@ -77,18 +65,15 @@
             const time = parseFloat(document.getElementById("time").value);
             const compound = parseInt(document.getElementById("compound").value);
             const payment = parseFloat(document.getElementById("payment").value);
-            const growthRate = parseFloat(document.getElementById("growthRate").value);
-            const deferredTime = parseFloat(document.getElementById("deferredTime").value);
             const calcType = document.getElementById("calculationType").value;
 
-            if (isNaN(principal) || isNaN(rate) || isNaN(time) || isNaN(compound) || compound <= 0 || isNaN(payment) || isNaN(growthRate) || isNaN(deferredTime)) {
+            if (isNaN(principal) || isNaN(rate) || isNaN(time) || isNaN(compound) || compound <= 0 || isNaN(payment)) {
                 document.getElementById("result").textContent = "Please enter valid numbers.";
                 return;
             }
 
             let resultText = "";
             const rateDecimal = rate / 100;
-            const growthRateDecimal = growthRate / 100;
 
             switch (calcType) {
                 case "simple":
