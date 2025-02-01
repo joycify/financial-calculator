@@ -9,16 +9,36 @@
     <h1>Financial Calculator</h1>
     <form onsubmit="calculateFinancials(event)">
         <label for="principal">Principal ($):</label>
-        <input type="number" id="principal" required><br><br>
+        <input type="number" id="principal" step="0.01" required><br><br>
 
         <label for="rate">Annual Interest Rate (%):</label>
-        <input type="number" id="rate" required><br><br>
+        <input type="number" id="rate" step="0.01" required><br><br>
 
         <label for="time">Time (years):</label>
-        <input type="number" id="time" required><br><br>
+        <input type="number" id="time" step="0.01" required><br><br>
 
         <label for="compound">Number of Compounding Periods per Year:</label>
         <input type="number" id="compound" value="1" required><br><br>
+
+        <label for="payment">Payment Amount (for annuities):</label>
+        <input type="number" id="payment" step="0.01" value="0"><br><br>
+
+        <label for="growthRate">Annual Growth Rate of Payments (%):</label>
+        <input type="number" id="growthRate" step="0.01" value="0"><br><br>
+
+        <label for="deferredTime">Deferred Period (years):</label>
+        <input type="number" id="deferredTime" step="0.01" value="0"><br><br>
+
+        <select id="calculationType">
+            <option value="simple">Simple Interest</option>
+            <option value="compound">Compound Interest</option>
+            <option value="presentValueAnnuity">Present Value of Annuity</option>
+            <option value="futureValueAnnuity">Future Value of Annuity</option>
+            <option value="growingAnnuity">Present Value of Growing Annuity</option>
+            <option value="deferredAnnuity">Deferred Annuity</option>
+            <option value="perpetuity">Perpetuity</option>
+            <option value="growingPerpetuity">Growing Perpetuity</option>
+        </select><br><br>
 
         <button type="submit">Calculate</button>
     </form>
@@ -34,33 +54,93 @@
             const rate = parseFloat(document.getElementById("rate").value);
             const time = parseFloat(document.getElementById("time").value);
             const compound = parseInt(document.getElementById("compound").value);
+            const payment = parseFloat(document.getElementById("payment").value);
+            const growthRate = parseFloat(document.getElementById("growthRate").value);
+            const deferredTime = parseFloat(document.getElementById("deferredTime").value);
+            const calcType = document.getElementById("calculationType").value;
 
-            if (isNaN(principal) || isNaN(rate) || isNaN(time) || isNaN(compound) || compound <= 0) {
+            if (isNaN(principal) || isNaN(rate) || isNaN(time) || isNaN(compound) || compound <= 0 || isNaN(payment) || isNaN(growthRate) || isNaN(deferredTime)) {
                 document.getElementById("result").textContent = "Please enter valid numbers.";
                 return;
             }
 
-            // Simple Interest
-            const simpleInterest = (principal * rate * time) / 100;
-            const totalSimpleAmount = principal + simpleInterest;
+            let resultText = "";
+            const rateDecimal = rate / 100;
+            const growthRateDecimal = growthRate / 100;
 
-            // Compound Interest
-            const compoundInterest = principal * Math.pow((1 + (rate / 100) / compound), compound * time) - principal;
-            const totalCompoundAmount = principal + compoundInterest;
+            switch (calcType) {
+                case "simple":
+                    const simpleInterest = (principal * rate * time) / 100;
+                    const totalSimpleAmount = principal + simpleInterest;
+                    resultText = `Simple Interest: $${simpleInterest.toFixed(2)}<br>Total Amount: $${totalSimpleAmount.toFixed(2)}`;
+                    break;
 
-            // Discount Rate Calculation (Future Value to Present Value)
-            const discountRate = 1 / Math.pow((1 + rate / 100), time);
-            const discountedValue = principal * discountRate;
+                case "compound":
+                    const compoundInterest = principal * Math.pow((1 + rateDecimal / compound), compound * time) - principal;
+                    const totalCompoundAmount = principal + compoundInterest;
+                    resultText = `Compound Interest: $${compoundInterest.toFixed(2)}<br>Total Amount: $${totalCompoundAmount.toFixed(2)}`;
+                    break;
 
-            // Display results
-            document.getElementById("result").innerHTML = `
-                <strong>Results:</strong><br>
-                Simple Interest: $${simpleInterest.toFixed(2)}<br>
-                Total Amount with Simple Interest: $${totalSimpleAmount.toFixed(2)}<br><br>
-                Compound Interest: $${compoundInterest.toFixed(2)}<br>
-                Total Amount with Compound Interest: $${totalCompoundAmount.toFixed(2)}<br><br>
-                Discounted Present Value (using Discount Rate): $${discountedValue.toFixed(2)}
-            `;
+                case "presentValueAnnuity":
+                    if (payment === 0) {
+                        resultText = "Please enter a payment amount.";
+                        break;
+                    }
+                    const presentValueAnnuity = payment * ((1 - Math.pow(1 + rateDecimal / compound, -compound * time)) / (rateDecimal / compound));
+                    resultText = `Present Value of Annuity: $${presentValueAnnuity.toFixed(2)}`;
+                    break;
+
+                case "futureValueAnnuity":
+                    if (payment === 0) {
+                        resultText = "Please enter a payment amount.";
+                        break;
+                    }
+                    const futureValueAnnuity = payment * ((Math.pow(1 + rateDecimal / compound, compound * time) - 1) / (rateDecimal / compound));
+                    resultText = `Future Value of Annuity: $${futureValueAnnuity.toFixed(2)}`;
+                    break;
+
+                case "growingAnnuity":
+                    if (payment === 0 || growthRateDecimal === rateDecimal) {
+                        resultText = "Please enter valid payment and growth rates.";
+                        break;
+                    }
+                    const growingAnnuity = payment * ((1 - Math.pow((1 + growthRateDecimal) / (1 + rateDecimal), time)) / (rateDecimal - growthRateDecimal));
+                    resultText = `Present Value of Growing Annuity: $${growingAnnuity.toFixed(2)}`;
+                    break;
+
+                case "deferredAnnuity":
+                    if (payment === 0) {
+                        resultText = "Please enter a payment amount.";
+                        break;
+                    }
+                    const deferredAnnuity = payment * ((1 - Math.pow(1 + rateDecimal, -time)) / rateDecimal) / Math.pow(1 + rateDecimal, deferredTime);
+                    resultText = `Present Value of Deferred Annuity: $${deferredAnnuity.toFixed(2)}`;
+                    break;
+
+                case "perpetuity":
+                    if (payment === 0) {
+                        resultText = "Please enter a payment amount.";
+                        break;
+                    }
+                    const perpetuityValue = payment / rateDecimal;
+                    resultText = `Perpetuity Value: $${perpetuityValue.toFixed(2)}`;
+                    break;
+
+                case "growingPerpetuity":
+                    if (payment === 0 || growthRateDecimal >= rateDecimal) {
+                        resultText = "Please enter valid payment and growth rates.";
+                        break;
+                    }
+                    const growingPerpetuityValue = payment / (rateDecimal - growthRateDecimal);
+                    resultText = `Growing Perpetuity Value: $${growingPerpetuityValue.toFixed(2)}`;
+                    break;
+
+                default:
+                    resultText = "Invalid calculation type selected.";
+                    break;
+            }
+
+            document.getElementById("result").innerHTML = `<strong>Results:</strong><br>${resultText}`;
         }
     </script>
 </body>
