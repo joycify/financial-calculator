@@ -3,152 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Calculator</title>
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        h1 {
-            color: #4CAF50;
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        /* Form container styling */
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-
-        /* Input fields */
-        label {
-            font-size: 14px;
-            color: #333;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        input[type="number"] {
-            font-family: 'Arial', sans-serif;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            width: 100%;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        /* Instructions list */
-        ul {
-            text-align: left;
-            margin: 20px 0;
-        }
-
-        ul p {
-            font-size: 14px;
-            color: #555;
-        }
-
-        /* Result text */
-        #result {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-top: 20px;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 600px) {
-            form {
-                width: 100%;
-                padding: 15px;
-            }
-            button {
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
-    </style>
+    <title>Smart Financial Calculator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>Smart Financial Calculator</h1>
+            <p class="tagline">Plan your financial future with precision</p>
+        </header>
 
-    <div>
-        <h1>Financial Calculator</h1>
-        <p><strong>Instructions:</strong></p>
-        <ul>
-            <p>1) Enter the principal amount in dollars.</p>
-            <p>2) Input the annual interest rate as a percentage.</p>
-            <p>3) Specify the time duration in years.</p>
-            <p>4) Choose the number of compounding periods per year.</p>
-            <p>5) If calculating annuities, enter the payment amount.</p>
-            <p>6) Select the calculation type from the dropdown menu.</p>
-            <p>7) Click the "Calculate" button to get results.</p>
-        </ul>
+        <div class="calculator-container">
+            <div class="calculator-card">
+                <div class="instructions">
+                    <h3>Instructions</h3>
+                    <ol>
+                        <li>Enter the principal amount in dollars</li>
+                        <li>Input the annual interest rate as a percentage</li>
+                        <li>Specify the time duration in years</li>
+                        <li>Choose the number of compounding periods per year</li>
+                        <li>For annuities, enter the payment amount</li>
+                        <li>Select your desired calculation type</li>
+                        <li>Click "Calculate" to view results</li>
+                    </ol>
+                </div>
 
-        <form onsubmit="calculateFinancials(event)">
-            <label for="principal">Principal ($):</label>
-            <input type="number" id="principal" step="0.01" required><br>
+                <form id="calculator-form">
+                    <div class="form-group">
+                        <label for="principal">Principal ($):</label>
+                        <input type="number" id="principal" step="0.01" required>
+                    </div>
 
-            <label for="rate">Annual Interest Rate (%):</label>
-            <input type="number" id="rate" step="0.01" required><br>
+                    <div class="form-group">
+                        <label for="rate">Annual Interest Rate (%):</label>
+                        <input type="number" id="rate" step="0.01" required>
+                    </div>
 
-            <label for="time">Time (years):</label>
-            <input type="number" id="time" step="0.01" required><br>
+                    <div class="form-group">
+                        <label for="time">Time (years):</label>
+                        <input type="number" id="time" step="0.01" required>
+                    </div>
 
-            <label for="compound">Compounding Periods per Year:</label>
-            <input type="number" id="compound" value="1" required><br>
+                    <div class="form-group">
+                        <label for="compound">Compounding Periods per Year:</label>
+                        <input type="number" id="compound" value="12" required>
+                    </div>
 
-            <label for="payment">Payment Amount (for annuities):</label>
-            <input type="number" id="payment" step="0.01" value="0"><br>
+                    <div class="form-group">
+                        <label for="payment">Payment Amount (for annuities):</label>
+                        <input type="number" id="payment" step="0.01" value="0">
+                    </div>
 
-            <select id="calculationType">
-                <option value="simple">Simple Interest</option>
-                <option value="compound">Compound Interest</option>
-                <option value="presentValueAnnuity">Present Value of Annuity</option>
-                <option value="futureValueAnnuity">Future Value of Annuity</option>
-            </select><br>
+                    <div class="form-group">
+                        <label for="calculationType">Calculation Type:</label>
+                        <select id="calculationType">
+                            <option value="simple">Simple Interest</option>
+                            <option value="compound">Compound Interest</option>
+                            <option value="presentValueAnnuity">Present Value of Annuity</option>
+                            <option value="futureValueAnnuity">Future Value of Annuity</option>
+                        </select>
+                    </div>
 
-            <button type="submit">Calculate</button>
-        </form>
+                    <button type="submit" class="calculate-btn">Calculate</button>
+                </form>
+            </div>
 
-        <h2 id="result"></h2>
+            <div class="results-card" id="results-container">
+                <h2>Results</h2>
+                <div id="result" class="result-content">
+                    <p>Your calculation results will appear here.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 Smart Financial Calculator | Personal Side Project</p>
+        </footer>
     </div>
 
     <script>
-        function calculateFinancials(event) {
+        document.getElementById('calculator-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            
+            calculateFinancials();
+        });
+
+        function calculateFinancials() {
             const principal = parseFloat(document.getElementById("principal").value);
             const rate = parseFloat(document.getElementById("rate").value);
             const time = parseFloat(document.getElementById("time").value);
@@ -156,42 +95,86 @@
             const payment = parseFloat(document.getElementById("payment").value);
             const calcType = document.getElementById("calculationType").value;
 
-            if (isNaN(principal) || isNaN(rate) || isNaN(time) || isNaN(compound) || compound <= 0 || isNaN(payment)) {
-                document.getElementById("result").textContent = "Please enter valid numbers.";
+            if (isNaN(principal) || isNaN(rate) || isNaN(time) || isNaN(compound) || compound <= 0) {
+                document.getElementById("result").innerHTML = "<p class='error'>Please enter valid numbers.</p>";
                 return;
             }
 
-            let resultText = "";
+            let resultHTML = "";
             const rateDecimal = rate / 100;
 
             switch (calcType) {
                 case "simple":
                     const simpleInterest = (principal * rate * time) / 100;
                     const totalSimpleAmount = principal + simpleInterest;
-                    resultText = `Simple Interest: $${simpleInterest.toFixed(2)}<br>Total Amount: $${totalSimpleAmount.toFixed(2)}`;
+                    resultHTML = `
+                        <div class="result-item">
+                            <span>Principal:</span> $${principal.toFixed(2)}
+                        </div>
+                        <div class="result-item">
+                            <span>Simple Interest:</span> $${simpleInterest.toFixed(2)}
+                        </div>
+                        <div class="result-item highlight">
+                            <span>Total Amount:</span> $${totalSimpleAmount.toFixed(2)}
+                        </div>
+                    `;
                     break;
                 
                 case "compound":
-                    const compoundInterest = principal * Math.pow((1 + rateDecimal / compound), compound * time) - principal;
-                    const totalCompoundAmount = principal + compoundInterest;
-                    resultText = `Compound Interest: $${compoundInterest.toFixed(2)}<br>Total Amount: $${totalCompoundAmount.toFixed(2)}`;
+                    const totalCompoundAmount = principal * Math.pow((1 + rateDecimal / compound), compound * time);
+                    const compoundInterest = totalCompoundAmount - principal;
+                    resultHTML = `
+                        <div class="result-item">
+                            <span>Principal:</span> $${principal.toFixed(2)}
+                        </div>
+                        <div class="result-item">
+                            <span>Compound Interest:</span> $${compoundInterest.toFixed(2)}
+                        </div>
+                        <div class="result-item highlight">
+                            <span>Total Amount:</span> $${totalCompoundAmount.toFixed(2)}
+                        </div>
+                    `;
                     break;
                 
                 case "presentValueAnnuity":
-                    if (payment === 0) {
-                        resultText = "Please enter a payment amount.";
+                    if (payment <= 0) {
+                        resultHTML = "<p class='error'>Please enter a positive payment amount.</p>";
                         break;
                     }
                     const presentValueAnnuity = payment * ((1 - Math.pow(1 + rateDecimal / compound, -compound * time)) / (rateDecimal / compound));
-                    resultText = `Present Value of Annuity: $${presentValueAnnuity.toFixed(2)}`;
+                    resultHTML = `
+                        <div class="result-item">
+                            <span>Payment Amount:</span> $${payment.toFixed(2)}
+                        </div>
+                        <div class="result-item highlight">
+                            <span>Present Value of Annuity:</span> $${presentValueAnnuity.toFixed(2)}
+                        </div>
+                    `;
+                    break;
+                
+                case "futureValueAnnuity":
+                    if (payment <= 0) {
+                        resultHTML = "<p class='error'>Please enter a positive payment amount.</p>";
+                        break;
+                    }
+                    const futureValueAnnuity = payment * ((Math.pow(1 + rateDecimal / compound, compound * time) - 1) / (rateDecimal / compound));
+                    resultHTML = `
+                        <div class="result-item">
+                            <span>Payment Amount:</span> $${payment.toFixed(2)}
+                        </div>
+                        <div class="result-item highlight">
+                            <span>Future Value of Annuity:</span> $${futureValueAnnuity.toFixed(2)}
+                        </div>
+                    `;
                     break;
                 
                 default:
-                    resultText = "Invalid calculation type selected.";
+                    resultHTML = "<p class='error'>Invalid calculation type selected.</p>";
                     break;
             }
 
-            document.getElementById("result").innerHTML = `<strong>Results:</strong><br>${resultText}`;
+            document.getElementById("result").innerHTML = resultHTML;
+            document.getElementById("results-container").classList.add("show-results");
         }
     </script>
 </body>
